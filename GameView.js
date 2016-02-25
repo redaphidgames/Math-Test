@@ -10,6 +10,7 @@ var GameView = function () {
 };
 
 GameView.prototype.setupView = function() {
+	this.DRAGGER_SPACE = 2;
 	this.viewContainer = new createjs.Container();
 	
 	this.addends = new createjs.Text("Addends", "60px Arial", "#DDD");
@@ -20,12 +21,14 @@ GameView.prototype.setupView = function() {
 	
 	this.resultMsg = new createjs.Text("Drag numbers", "40px Arial", "#DDD");
 	this.resultMsg.textAlign = "center";
-	this.resultMsg.x = 160; // = this.RIGHT_MARGIN;
-	this.resultMsg.y = 290;
+	this.resultMsg.x = 160; 
+	this.resultMsg.y = 390;
 	this.viewContainer.addChild(this.resultMsg);
 
 	this.targetsContainer = new createjs.Container();		//Holds drop targets
 	this.viewContainer.addChild(this.targetsContainer);
+	
+	margin = 330 - this.RIGHT_MARGIN; //((window.BOX_SIZE + this.DRAGGER_SPACE) * 4) / 3;
 	
 	//Create draggers
 	for (var i = 0; i < 10; i++) {
@@ -35,16 +38,21 @@ GameView.prototype.setupView = function() {
 		d = new createjs.Shape();
 		d.graphics.beginFill("#87d");
 		d.graphics.drawRect(0,0,window.BOX_SIZE,window.BOX_SIZE);
-		txt = new createjs.Text(i, "20px Arial", "#fff");
+		txt = new createjs.Text(i, "32px Arial", "#fff");
 		txt.textAlign = "center";
 		cont.addChild(d);
-		txt.x =  + window.BOX_SIZE / 2;
+		txt.x =+ window.BOX_SIZE / 2;
 		txt.y =  5;
 
 		cont.addChild(txt);
 		this.viewContainer.addChild(cont);
-		cont.x = 2 + i * ( window.BOX_SIZE + 2);
-		cont.y = 250;
+		if (i < 5) {
+			cont.x = margin + i * ( window.BOX_SIZE + this.DRAGGER_SPACE);
+		} else {
+			cont.x = margin + (i - 5) * ( window.BOX_SIZE + this.DRAGGER_SPACE);
+		}
+		cont.y = 250 + (window.BOX_SIZE + 4) * Math.round(i/10);
+
 		cont.origX = cont.x;  //to return after dragging;
 		cont.origY = cont.y;
 		
@@ -57,10 +65,8 @@ GameView.prototype.setupView = function() {
 
 		// the pressmove event is dispatched when the mouse moves after a mousedown on the target until the mouse is released.
 		cont.addEventListener("pressmove", this.dragTest.bind(this));
-
 		this.draggers[i] = cont;
 	}
-	
 }
 GameView.prototype.dragTest = function(evt) {
 	
@@ -88,7 +94,7 @@ GameView.prototype.dragTest = function(evt) {
 						this.rollOn(target);
 						break;
 					}
-				} else {
+				} else if (o.x < target.x + (window.BOX_SIZE/2) ) {  //make sure is close to this target than next
 					this.rollOn(target);
 					break;
 				}
@@ -103,7 +109,6 @@ GameView.prototype.unRoll = function(func) {
 	for (var i = 0; i < this.targets.length; i++) {
 		this.targets[i].alpha = 1;
 	}
-
 }
 GameView.prototype.setDropTest = function(func) {
 	
@@ -134,10 +139,10 @@ GameView.prototype.createTargets = function(digs) {
 		t.graphics.beginFill("#eee");
 		t.graphics.drawRect(0,0, window.BOX_SIZE, window.BOX_SIZE);
 		this.targetsContainer.addChild(t);
-		t.x = this.RIGHT_MARGIN - ((digs - i) *  (window.BOX_SIZE + 2));
+		t.x = this.RIGHT_MARGIN - ((digs - i) *  (window.BOX_SIZE + this.DRAGGER_SPACE));
 		t.y = 180;
 
-		t.textObj =  new createjs.Text("", "20px Arial", "#F22");
+		t.textObj =  new createjs.Text("", "30px Arial", "#F22");
 		t.textObj.textAlign = "center";
 		t.textObj.x = t.x + window.BOX_SIZE / 2;
 		t.textObj.y = t.y + 6;
