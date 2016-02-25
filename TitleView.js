@@ -15,6 +15,11 @@ TitleView.prototype.setupView = function() {
 	this.playBtn.x = 0;
 	this.playBtn.y = 150;
 	
+	title = new createjs.Text("Math Test!", "40px Arial", "#CCF");
+	title.x = 40;
+	title.y = 40;
+	this.viewContainer.addChild(title);
+	
 	txt = new createjs.Text("Play", "20px Arial", "#fff");
 	txt.x = this.playBtn.x + 25;
 	txt.y = this.playBtn.y + 15;

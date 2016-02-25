@@ -41,7 +41,7 @@ GameCtrl.prototype.dropTest = function(evt) {
 		for (var i = 0; i < targets.length; i++) {
 			target = targets[i];
 
-			if (dropped.x > target.x - window.BOX_SIZE && dropped.x < target.x + window.BOX_SIZE ) {
+			if (dropped.x > target.x - window.BOX_SIZE && dropped.x < target.x + window.BOX_SIZE) {
 				//Check which is closer
 				if (i == 0) {
 					if (dropped.x < target.x + window.BOX_SIZE / 2) {
@@ -56,7 +56,11 @@ GameCtrl.prototype.dropTest = function(evt) {
 						break;
 					}
 				} else {
-					this.finishDrop(dropped.name, i);
+					if (dropped.x < target.x + (window.BOX_SIZE/2) ) {  //make sure is close to this target than next{
+						this.finishDrop(dropped.name, i);
+					} else {
+						this.finishDrop(dropped.name, i + 1);  //should never exceed limit
+					}
 					hit = true;
 					break;
 				}
